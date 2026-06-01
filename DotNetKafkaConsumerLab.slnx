@@ -1,2 +1,7 @@
 <Solution>
+  <Folder Name="/src/">
+    <Project Path="src/KafkaConsumerLab.Contracts/KafkaConsumerLab.Contracts.csproj" />
+    <Project Path="src/KafkaConsumerLab.Producer/KafkaConsumerLab.Producer.csproj" />
+    <Project Path="src/KafkaConsumerLab.Worker/KafkaConsumerLab.Worker.csproj" />
+  </Folder>
 </Solution>
