@@ -1,5 +1,11 @@
-﻿################################################################################
-# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
-################################################################################
-
-/.dotnet-home
+bin/
+obj/
+.vs/
+.vscode/
+.idea/
+.dotnet-home/
+.nuget-packages/
+consumer-state.db
+*.user
+*.suo
+TestResults/

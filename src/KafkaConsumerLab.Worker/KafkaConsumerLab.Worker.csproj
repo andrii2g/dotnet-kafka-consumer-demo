@@ -1,13 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk.Worker">
-
-  <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>dotnet-KafkaConsumerLab.Worker-0b934eb7-6fdd-4a15-9a96-953f61a591a5</UserSecretsId>
-  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Confluent.Kafka" Version="2.5.3" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.8" />
+    <PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" Version="8.0.0" />
+  </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.8" />
+    <ProjectReference Include="..\KafkaConsumerLab.Contracts\KafkaConsumerLab.Contracts.csproj" />
   </ItemGroup>
 </Project>
