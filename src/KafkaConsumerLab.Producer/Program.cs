@@ -49,7 +49,7 @@ static OrderCreated CreateMessage(string scenario, int index, string? fixedEvent
         "transient" => NewMessage($"evt-{suffix}", "transient"),
         "poison" => NewMessage($"evt-{suffix}", "poison"),
         "duplicate" => NewMessage(fixedEventId ?? "fixed-123", null),
-        "mixed" => index % 4 switch
+        "mixed" => (index % 4) switch
         {
             0 => NewMessage($"evt-{suffix}", null),
             1 => NewMessage($"evt-{suffix}", "transient"),

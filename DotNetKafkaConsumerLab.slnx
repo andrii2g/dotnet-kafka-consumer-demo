@@ -4,4 +4,7 @@
     <Project Path="src/KafkaConsumerLab.Producer/KafkaConsumerLab.Producer.csproj" />
     <Project Path="src/KafkaConsumerLab.Worker/KafkaConsumerLab.Worker.csproj" />
   </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/KafkaConsumerLab.Tests/KafkaConsumerLab.Tests.csproj" />
+  </Folder>
 </Solution>
