@@ -9,3 +9,4 @@ consumer-state.db
 *.user
 *.suo
 TestResults/
+reports/

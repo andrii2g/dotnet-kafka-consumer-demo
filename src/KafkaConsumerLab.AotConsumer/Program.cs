@@ -54,13 +54,13 @@ try
 
         if (consumed % options.CommitBatch == 0)
         {
-            consumer.Commit();
+            CommitStoredOffsets(consumer);
         }
     }
 
-    if (consumed > 0)
+    if (consumed > 0 && consumed % options.CommitBatch != 0)
     {
-        consumer.Commit();
+        CommitStoredOffsets(consumer);
     }
 }
 finally
@@ -77,6 +77,17 @@ Console.WriteLine("Consumed={0} Deserialized={1} ElapsedMs={2:N0} RatePerSecond=
     perSecond);
 
 return consumed >= options.Count ? 0 : 2;
+
+static void CommitStoredOffsets(IConsumer<string, string> consumer)
+{
+    try
+    {
+        consumer.Commit();
+    }
+    catch (KafkaException exception) when (exception.Error.Code == ErrorCode.Local_NoOffset)
+    {
+    }
+}
 
 internal sealed record ConsumerRunOptions(
     string BootstrapServers,
