@@ -1,6 +1,6 @@
 # dotnet-kafka-consumer-demo
 
-Small .NET 8 sample showing a Kafka worker that processes before commit, retries transient failures by parking messages on a retry topic, sends poison/unexpected failures to a DLQ, and uses SQLite idempotency to tolerate redelivery.
+Small .NET 10 sample showing a Kafka worker that processes before commit, retries transient failures by parking messages on a retry topic, sends poison/unexpected failures to a DLQ, and uses SQLite idempotency to tolerate redelivery.
 
 ## Architecture
 
@@ -18,7 +18,7 @@ flowchart LR
 
 ## Requirements
 
-- .NET 8 SDK
+- .NET 10 SDK
 - Docker Desktop or another local Docker runtime
 
 ## Quickstart
@@ -45,6 +45,27 @@ dotnet run --project src/KafkaConsumerLab.Producer -- transient --count 3
 dotnet run --project src/KafkaConsumerLab.Producer -- poison --count 3
 dotnet run --project src/KafkaConsumerLab.Producer -- duplicate --event-id fixed-123 --count 3
 dotnet run --project src/KafkaConsumerLab.Producer -- mixed --count 20
+```
+
+## Native AOT Producer and Consumer
+
+The `KafkaConsumerLab.AotProducer` and `KafkaConsumerLab.AotConsumer` projects are separate console applications intended for Native AOT publishing and later throughput benchmarking.
+
+```bash
+dotnet publish src/KafkaConsumerLab.AotProducer -c Release -r win-x64
+dotnet publish src/KafkaConsumerLab.AotConsumer -c Release -r win-x64
+```
+
+Run the producer:
+
+```bash
+src/KafkaConsumerLab.AotProducer/bin/Release/net10.0/win-x64/publish/KafkaConsumerLab.AotProducer.exe --count 100000
+```
+
+Run the consumer with a fresh group:
+
+```bash
+src/KafkaConsumerLab.AotConsumer/bin/Release/net10.0/win-x64/publish/KafkaConsumerLab.AotConsumer.exe --group-id aot-bench-1 --count 100000
 ```
 
 ## Reliability Model
