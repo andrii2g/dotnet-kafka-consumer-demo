@@ -1,9 +1,15 @@
 using System.Diagnostics;
 using System.Text.Json;
 using Confluent.Kafka;
+using Confluent.Kafka.Admin;
 using KafkaConsumerLab.Contracts;
 
 var options = ProducerRunOptions.Parse(args);
+
+if (options.CreateTopic)
+{
+    await CreateTopicAsync(options).ConfigureAwait(false);
+}
 
 var config = new ProducerConfig
 {
@@ -65,6 +71,30 @@ Console.WriteLine("Produced={0} Failed={1} ElapsedMs={2:N0} RatePerSecond={3:N0}
 
 return failed == 0 ? 0 : 1;
 
+static async Task CreateTopicAsync(ProducerRunOptions options)
+{
+    using var adminClient = new AdminClientBuilder(new AdminClientConfig
+    {
+        BootstrapServers = options.BootstrapServers
+    }).Build();
+
+    try
+    {
+        await adminClient.CreateTopicsAsync([
+            new TopicSpecification
+            {
+                Name = options.Topic,
+                NumPartitions = options.Partitions,
+                ReplicationFactor = options.ReplicationFactor
+            }
+        ]).ConfigureAwait(false);
+    }
+    catch (CreateTopicsException exception)
+        when (exception.Results.Any(result => result.Error.Code == ErrorCode.TopicAlreadyExists))
+    {
+    }
+}
+
 OrderCreated CreateMessage(int index)
 {
     var suffix = $"{options.EventPrefix}-{index:D8}";
@@ -88,7 +118,10 @@ internal sealed record ProducerRunOptions(
     bool EnableIdempotence,
     int LingerMs,
     int BatchSize,
-    int TimeoutSeconds)
+    int TimeoutSeconds,
+    bool CreateTopic,
+    int Partitions,
+    short ReplicationFactor)
 {
     public static ProducerRunOptions Parse(string[] args) =>
         new(
@@ -100,7 +133,10 @@ internal sealed record ProducerRunOptions(
             ReadBool(args, "--idempotence", true),
             ReadInt(args, "--linger-ms", 5),
             ReadInt(args, "--batch-size", 1000000),
-            ReadInt(args, "--timeout-seconds", 60));
+            ReadInt(args, "--timeout-seconds", 60),
+            ReadBool(args, "--create-topic", false),
+            Math.Max(1, ReadInt(args, "--partitions", 1)),
+            (short)Math.Max(1, ReadInt(args, "--replication-factor", 1)));
 
     private static string ReadString(string[] args, string name, string defaultValue)
     {

@@ -1,4 +1,4 @@
-# dotnet-kafka-consumer-demo
+# Kafka Consumer Demo
 
 Small .NET 10 sample showing a Kafka worker that processes before commit, retries transient failures by parking messages on a retry topic, sends poison/unexpected failures to a DLQ, and uses SQLite idempotency to tolerate redelivery.
 
@@ -67,6 +67,20 @@ Run the consumer with a fresh group:
 ```bash
 src/KafkaConsumerLab.AotConsumer/bin/Release/net10.0/win-x64/publish/KafkaConsumerLab.AotConsumer.exe --group-id aot-bench-1 --count 100000
 ```
+
+Benchmark the CoreCLR/JIT and Native AOT consumers against the same produced messages:
+
+```bash
+bash scripts/benchmark-consumers.sh --count 100000
+```
+
+On Windows PowerShell, use:
+
+```powershell
+.\scripts\benchmark-consumers.ps1 -Count 100000
+```
+
+See [docs/BENCHMARK.md](docs/BENCHMARK.md) for the benchmark quickstart and all options.
 
 ## Reliability Model
 
